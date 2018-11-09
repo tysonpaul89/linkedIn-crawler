@@ -1,4 +1,5 @@
 import os
+from tinydb import TinyDB, Query
 
 # Domain name to crawl
 domain = 'https://www.linkedin.com/'
@@ -11,8 +12,8 @@ crawl_urls = {
 
 # User credentials
 credentials = {
-    'email': '',
-    'password': ''
+    'email': 'go4chacko@gmail.com',
+    'password': '3jt034092'
 }
 
 # Wait time
@@ -23,3 +24,14 @@ dir_path = os.getcwd()
 
 # Cookie file name to store cookies
 cookie_name = 'cookies.pkl'
+
+# Gets cookie file name
+cookie_file = os.path.join(dir_path, cookie_name)
+
+# Gets screenshot saving directory path
+screenshot_dir = os.path.join(dir_path, 'screenshots' + os.sep)
+
+# TinyDB Config
+db_path = os.path.join(dir_path, 'db' + os.sep, 'db.json')
+db = TinyDB(db_path)
+
