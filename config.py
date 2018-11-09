@@ -12,8 +12,8 @@ crawl_urls = {
 
 # User credentials
 credentials = {
-    'email': 'go4chacko@gmail.com',
-    'password': '3jt034092'
+    'email': '',
+    'password': ''
 }
 
 # Wait time
