@@ -1,7 +1,7 @@
 # linkedIn-crawler
 LinkedIn crawler using selenium
 
-##Setup
+## Setup
 * Install Python 3.*
 * Create Virtual environment - pipenv or virtualenv
 * Install dependencies from requirement.txt
