@@ -1,0 +1,6 @@
+# http://chromedriver.chromium.org/downloads
+chromedriver
+.pylintrc
+cookies.pkl
+
+.vscode/*
