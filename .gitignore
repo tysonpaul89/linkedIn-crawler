@@ -2,7 +2,7 @@
 # http://chromedriver.chromium.org/downloads
 chromedriver
 .pylintrc
-cookies.pkl
+*.pkl
 
 # Directories to ignore
 .vscode/*

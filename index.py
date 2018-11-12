@@ -1,6 +1,7 @@
 """ Main file """
 import os
 import pickle
+import json
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
@@ -12,8 +13,7 @@ from selenium.common.exceptions import TimeoutException
 from config import timeout, dir_path, crawl_urls, credentials, cookie_file, screenshot_dir,\
     db
 
-
-
+db.purge()
 
 # Gets chrome driver path
 chrome_driver_path = os.path.join(dir_path, 'chromedriver')
@@ -74,6 +74,44 @@ try:
         # Taking screenshot
         browser.save_screenshot(screenshot_dir + 'homepage_from_cookie.png')
 
+    # search link
+    search_link = 'https://www.linkedin.com/search/results/people/?keywords='
+    # search keywords
+    search_keywords = ['hr', 'hiring', 'acquisition']
+
+    # Search
+    s_link = search_link + search_keywords[0]
+    browser.get(s_link)
+    # Wait till the element is located
+    WebDriverWait(browser, timeout).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, 'search-results__list'))
+    )
+
+    # Scroll top bottom
+    # Ref: https://stackoverflow.com/questions/20986631/how-can-i-scroll-a-web-page-using-selenium-webdriver-in-python
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # Get All search result items
+    search_results = browser.find_elements_by_class_name('search-result__info')
+
+    search_data = []
+    for result in search_results:
+        link = result.find_element_by_class_name('search-result__result-link')\
+                .get_attribute('href').strip()
+        id = link.split('-')[-1].replace('/', '')
+        search_data.append({
+            'id': id,
+            'link': link,
+            'name': result.find_element_by_class_name('actor-name').text.strip(),
+            'occupation': result.find_element_by_class_name('subline-level-1').text.strip(),
+            'location': result.find_element_by_class_name('subline-level-2').text.strip()
+        })
+
+    db.insert_multiple(search_data)
+
+    'artdeco-pagination__button--next'
+
+    """" Commented code for later purposes
     # Click on the my network link
     network_li_element = browser.find_element_by_id('mynetwork-nav-item')
     network_li_element.click()
@@ -87,12 +125,18 @@ try:
     pymk_cards = browser.find_elements_by_class_name('pymk-card')
 
     # WIP: Loop pymk_li and extract profile link, image, name and title
+    user_data = []
     for card in pymk_cards:
-        print('image: ', card.find_element_by_class_name('lazy-image').get_attribute('src'))
-        print('link: ',card.find_element_by_class_name('pymk-card__link').get_attribute('href'))
-        print('name: ',card.find_element_by_class_name('pymk-card__name').text)
-        print('job: ',card.find_element_by_class_name('pymk-card__occupation').text)
-        print('------------------------')
+        link = card.find_element_by_class_name('pymk-card__link').get_attribute('href')
+        id = link.split('-')[-1].replace('/', '')
+        user_data.append({
+            'id': id,
+            'name': card.find_element_by_class_name('pymk-card__name').text,
+            'job' : card.find_element_by_class_name('pymk-card__occupation').text,
+            'link': link
+        })
+
+    db.insert_multiple(user_data)"""
 
 except TimeoutException:
     print('Timed out waiting for page to load')
